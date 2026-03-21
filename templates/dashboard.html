@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+
+<div class="flex">
+  <!-- Sidebar -->
+  <div class="w-64 bg-blue-900 text-white min-h-screen p-5">
+    <h2 class="text-2xl font-bold mb-6">SoftApp</h2>
+   <ul>
+  <li class="mb-3"><a href="/">Dashboard</a></li>
+  <li class="mb-3"><a href="/students/">Students</a></li>
+  <li class="mb-3"><a href="/courses/">Courses</a></li>
+  <li class="mb-3"><a href="/payments/">Payments</a></li>
+</ul>
+  </div>
+
+  <!-- Main -->
+  <div class="flex-1 p-6">
+
+    <!-- Cards -->
+    <div class="grid grid-cols-3 gap-4 mb-6">
+      <div class="bg-white p-4 rounded shadow">Students: {{ students }}</div>
+      <div class="bg-green-200 p-4 rounded shadow">Revenue: ₹{{ revenue }}</div>
+      <div class="bg-red-200 p-4 rounded shadow">Pending: ₹{{ pending }}</div>
+    </div>
+
+    <!-- Chart -->
+    {% if labels %}
+<canvas id="chart"></canvas>
+{% else %}
+<p>No data available</p>
+{% endif %}
+
+  </div>
+</div>
+
+<script>
+const labels = JSON.parse('{{ labels|escapejs }}');
+const values = JSON.parse('{{ values|escapejs }}');
+
+new Chart(document.getElementById('chart'), {
+  type: 'bar',
+  data: {
+    labels: labels,
+    datasets: [{
+      label: 'Revenue',
+      data: values
+    }]
+  }
+});
+</script>
+
+</body>
+</html>
