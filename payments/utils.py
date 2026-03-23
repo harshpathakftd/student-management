@@ -46,7 +46,7 @@ def emi_reminder():
                 f"Hi {p.enrollment.student.name},\n"
                 f"Your EMI of ₹{p.amount} for {p.enrollment.course.name} "
                 f"is due in {days_left} days.\n"
-                f"- SoftApp Technologies"
+                f"- Student Management"
             )
 
             send_whatsapp(

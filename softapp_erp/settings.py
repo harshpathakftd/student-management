@@ -2,19 +2,19 @@
 Django settings for softapp_erp project.
 """
 
-from pathlib import Path
 import os
+from pathlib import Path
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # ==============================
 # SECURITY
 # ==============================
-SECRET_KEY = 'django-insecure-change-this-key'
+SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', 'django-insecure-change-this-key')
+DEBUG = os.getenv('DJANGO_DEBUG', 'False').lower() == 'true'
 
-DEBUG = True
-
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [host.strip() for host in os.getenv('DJANGO_ALLOWED_HOSTS', '*').split(',') if host.strip()]
+CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in os.getenv('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',') if origin.strip()]
 
 # ==============================
 # APPLICATIONS
@@ -106,6 +106,7 @@ USE_TZ = True
 # STATIC FILES
 # ==============================
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')  # ✅ CSS/JS folder

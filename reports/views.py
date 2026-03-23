@@ -49,7 +49,7 @@ def download_pdf(request):
     elements = []
 
     # Title
-    elements.append(Paragraph("SoftApp Technologies", styles['Title']))
+    elements.append(Paragraph("Student Management", styles['Title']))
     elements.append(Spacer(1, 10))
     elements.append(Paragraph("Payment Report", styles['Heading2']))
     elements.append(Spacer(1, 20))

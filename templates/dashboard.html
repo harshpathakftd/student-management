@@ -1,58 +1,145 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Management Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-slate-100 text-slate-800 antialiased">
+  <div class="min-h-screen lg:flex">
+    <aside class="w-full lg:w-72 bg-slate-900 text-slate-100 p-6 lg:p-8 shadow-xl">
+      <div class="mb-8">
+        <h1 class="text-2xl font-bold tracking-wide">Student Management</h1>
+        <p class="text-sm text-slate-400 mt-1">ERP Control Panel</p>
+      </div>
 
-<div class="flex">
-  <!-- Sidebar -->
-  <div class="w-64 bg-blue-900 text-white min-h-screen p-5">
-    <h2 class="text-2xl font-bold mb-6">SoftApp</h2>
-   <ul>
-  <li class="mb-3"><a href="/">Dashboard</a></li>
-  <li class="mb-3"><a href="/students/">Students</a></li>
-  <li class="mb-3"><a href="/courses/">Courses</a></li>
-  <li class="mb-3"><a href="/payments/">Payments</a></li>
-</ul>
+      <nav>
+        <ul class="space-y-2">
+          <li>
+            <a href="/" class="flex items-center rounded-lg px-4 py-2.5 bg-indigo-600 text-white font-medium">
+              Dashboard
+            </a>
+          </li>
+          <li>
+            <a href="/students/" class="flex items-center rounded-lg px-4 py-2.5 hover:bg-slate-800 transition-colors">
+              Students
+            </a>
+          </li>
+          <li>
+            <a href="/courses/" class="flex items-center rounded-lg px-4 py-2.5 hover:bg-slate-800 transition-colors">
+              Courses
+            </a>
+          </li>
+          <li>
+            <a href="/payments/" class="flex items-center rounded-lg px-4 py-2.5 hover:bg-slate-800 transition-colors">
+              Payments
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="flex-1 p-5 sm:p-8 lg:p-10">
+      <div class="mb-8">
+        <h2 class="text-3xl font-bold text-slate-900">Dashboard Overview</h2>
+        <p class="text-slate-500 mt-1">Track students and revenue at a glance.</p>
+      </div>
+
+      <section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5 mb-8">
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5">
+          <p class="text-sm text-slate-500">Total Students</p>
+          <p class="text-3xl font-bold mt-2">{{ students }}</p>
+        </div>
+        <div class="bg-gradient-to-br from-emerald-500 to-emerald-600 text-white rounded-2xl shadow-sm p-5">
+          <p class="text-sm text-emerald-100">Total Revenue</p>
+          <p class="text-3xl font-bold mt-2">₹{{ revenue }}</p>
+        </div>
+        <div class="bg-gradient-to-br from-rose-500 to-rose-600 text-white rounded-2xl shadow-sm p-5">
+          <p class="text-sm text-rose-100">Pending Amount</p>
+          <p class="text-3xl font-bold mt-2">₹{{ pending }}</p>
+        </div>
+      </section>
+
+      <section class="bg-white rounded-2xl shadow-sm border border-slate-200 p-5 sm:p-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-lg font-semibold text-slate-900">Revenue Trends</h3>
+          <span class="text-xs text-slate-500 bg-slate-100 px-2.5 py-1 rounded-full">Monthly View</span>
+        </div>
+
+        {% if labels %}
+          <div class="h-80">
+            <canvas id="chart"></canvas>
+          </div>
+        {% else %}
+          <div class="h-48 flex items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50">
+            <p class="text-slate-500">No data available</p>
+          </div>
+        {% endif %}
+      </section>
+    </main>
   </div>
 
-  <!-- Main -->
-  <div class="flex-1 p-6">
+  <script>
+    const labels = JSON.parse('{{ labels|escapejs }}');
+    const values = JSON.parse('{{ values|escapejs }}');
+    const chartElement = document.getElementById('chart');
 
-    <!-- Cards -->
-    <div class="grid grid-cols-3 gap-4 mb-6">
-      <div class="bg-white p-4 rounded shadow">Students: {{ students }}</div>
-      <div class="bg-green-200 p-4 rounded shadow">Revenue: ₹{{ revenue }}</div>
-      <div class="bg-red-200 p-4 rounded shadow">Pending: ₹{{ pending }}</div>
-    </div>
-
-    <!-- Chart -->
-    {% if labels %}
-<canvas id="chart"></canvas>
-{% else %}
-<p>No data available</p>
-{% endif %}
-
-  </div>
-</div>
-
-<script>
-const labels = JSON.parse('{{ labels|escapejs }}');
-const values = JSON.parse('{{ values|escapejs }}');
-
-new Chart(document.getElementById('chart'), {
-  type: 'bar',
-  data: {
-    labels: labels,
-    datasets: [{
-      label: 'Revenue',
-      data: values
-    }]
-  }
-});
-</script>
-
+    if (chartElement && labels.length && values.length) {
+      new Chart(chartElement, {
+        type: 'bar',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Revenue',
+            data: values,
+            borderWidth: 0,
+            borderRadius: 8,
+            backgroundColor: [
+              '#6366F1',
+              '#22C55E',
+              '#F59E0B',
+              '#0EA5E9',
+              '#EF4444',
+              '#8B5CF6'
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: true,
+              labels: {
+                boxWidth: 14,
+                color: '#334155'
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                display: false
+              },
+              ticks: {
+                color: '#64748B'
+              }
+            },
+            y: {
+              beginAtZero: true,
+              grid: {
+                color: '#E2E8F0'
+              },
+              ticks: {
+                color: '#64748B'
+              }
+            }
+          }
+        }
+      });
+    }
+  </script>
 </body>
 </html>

@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Courses | Student Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-100 text-slate-800 antialiased">
+  <div class="min-h-screen lg:flex">
+    <aside class="w-full lg:w-72 bg-slate-900 text-slate-100 p-6 lg:p-8 shadow-xl">
+      <div class="mb-8">
+        <h1 class="text-2xl font-bold tracking-wide">Student Management</h1>
+        <p class="text-sm text-slate-400 mt-1">ERP Control Panel</p>
+      </div>
+      <nav>
+        <ul class="space-y-2">
+          <li><a href="/" class="block rounded-lg px-4 py-2.5 hover:bg-slate-800 transition-colors">Dashboard</a></li>
+          <li><a href="/students/" class="block rounded-lg px-4 py-2.5 hover:bg-slate-800 transition-colors">Students</a></li>
+          <li><a href="/courses/" class="block rounded-lg px-4 py-2.5 bg-indigo-600 text-white font-medium">Courses</a></li>
+          <li><a href="/payments/" class="block rounded-lg px-4 py-2.5 hover:bg-slate-800 transition-colors">Payments</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <main class="flex-1 p-5 sm:p-8 lg:p-10">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+          <h2 class="text-3xl font-bold text-slate-900">Courses</h2>
+          <p class="text-slate-500 mt-1">Manage available courses and fees.</p>
+        </div>
+        <a href="/courses/add/" class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-white font-medium hover:bg-indigo-700 transition-colors">
+          + Add Course
+        </a>
+      </div>
+
+      <section class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+        {% if courses %}
+          <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-slate-200">
+              <thead class="bg-slate-50">
+                <tr>
+                  <th class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Course Name</th>
+                  <th class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Fees</th>
+                  <th class="px-6 py-3 text-left text-xs font-semibold text-slate-500 uppercase tracking-wider">Duration (Months)</th>
+                </tr>
+              </thead>
+              <tbody class="bg-white divide-y divide-slate-100">
+                {% for course in courses %}
+                  <tr class="hover:bg-slate-50 transition-colors">
+                    <td class="px-6 py-4 text-sm font-medium text-slate-700">{{ course.name }}</td>
+                    <td class="px-6 py-4 text-sm text-slate-700">₹{{ course.fees }}</td>
+                    <td class="px-6 py-4 text-sm text-slate-600">{{ course.duration }}</td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="p-10 text-center">
+            <p class="text-slate-500 mb-4">No courses found.</p>
+            <a href="/courses/add/" class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2.5 text-white font-medium hover:bg-indigo-700 transition-colors">
+              Add your first course
+            </a>
+          </div>
+        {% endif %}
+      </section>
+    </main>
+  </div>
+</body>
+</html>
